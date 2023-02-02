@@ -1,0 +1,41 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "localhost",
+            "request": "launch",
+            "type": "al",
+            "environmentType": "OnPrem",
+            "server": "http://localhost:8080/Komax_Test/",
+            "serverInstance": "Komax_Test",
+            "port": 9049,                   
+            "authentication": "Windows",
+            "startupObjectId": 22,
+            "startupObjectType": "Page",
+            "breakOnError": true,
+            "launchBrowser": true,
+            "enableLongRunningSqlStatements": false,
+            "enableSqlInformationDebugger": false,
+            "schemaUpdateMode":"ForceSync",
+            "tenant": "default"           
+        },
+        {
+            "name": "localhost",
+            "request": "launch",
+            "type": "al",
+            "environmentType": "OnPrem",
+            "server": "http://localhost:8080/Komax/",
+            "serverInstance": "Komax",
+            "port": 8049,                   
+            "authentication": "Windows",
+            "startupObjectId": 22,
+            "startupObjectType": "Page",
+            "breakOnError": true,
+            "launchBrowser": true,
+            "enableLongRunningSqlStatements": false,
+            "enableSqlInformationDebugger": false,
+            "schemaUpdateMode":"ForceSync",
+            "tenant": "default"           
+        }
+    ]
+}
