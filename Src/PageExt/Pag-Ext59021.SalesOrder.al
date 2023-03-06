@@ -154,7 +154,7 @@ pageextension 59021 "TP Sales Order" extends "Sales Order"
             //     ApplicationArea = all;
             // }
 
-            field("Partial Shiped"; Rec."Partial Shiped")
+            field("Partial Shipped"; Rec."Partial Shipped")
             {
                 ApplicationArea = all;
             }
@@ -254,6 +254,14 @@ pageextension 59021 "TP Sales Order" extends "Sales Order"
             Visible = true;
         }
         movebefore("Sell-to Customer No."; "No.")
+
+        addlast(General)
+        {
+            field("Completely Invoiced"; Rec."Completely Invoiced")
+            {
+                ApplicationArea = all;
+            }
+        }
     }
     actions
     {
@@ -261,6 +269,7 @@ pageextension 59021 "TP Sales Order" extends "Sales Order"
         {
             Promoted = true;
             PromotedCategory = Process;
+            Visible = false;
         }
         modify("Create Inventor&y Put-away/Pick")
         {
@@ -313,6 +322,63 @@ pageextension 59021 "TP Sales Order" extends "Sales Order"
         }
         //--BC190.Depost1.00.ALF
 
+        addafter(Action3)
+        {
+            action("Create Warehouse Shipment 2")
+            {
+                ApplicationArea = Warehouse;
+                Caption = 'Create &Warehouse Shipment';
+                Image = NewShipment;
+                Promoted = true;
+                PromotedCategory = Process;
+
+                trigger OnAction()
+                var
+                    GetSourceDocOutbound: Codeunit "Get Source Doc. Outbound";
+                begin
+
+                    Gbol_ShowShort := FALSE;
+                    Grcd_SalesLine.RESET;
+                    Grcd_SalesLine.SETRANGE(Grcd_SalesLine."Document Type", Grcd_SalesLine."Document Type"::Order);
+                    Grcd_SalesLine.SETRANGE(Grcd_SalesLine."Document No.", Rec."No.");
+                    Grcd_SalesLine.SETRANGE(Grcd_SalesLine.Type, Grcd_SalesLine.Type::Item);
+                    Grcd_SalesLine.SETFILTER(Grcd_SalesLine."No.", '<>%1', '');
+                    IF Grcd_SalesLine.FIND('-') THEN
+                        REPEAT
+                            IF SalesInfoPaneMgt.CalcAvailability(Grcd_SalesLine) < 0 THEN
+                                Gbol_ShowShort := TRUE;
+                        UNTIL Grcd_SalesLine.NEXT = 0;
+
+                    IF Gbol_ShowShort AND (Rec."Print Flag" = 0) THEN BEGIN
+                        Grcd_SalesHeader.RESET;
+                        Grcd_SalesHeader.SETRANGE("Document Type", Rec."Document Type");
+                        Grcd_SalesHeader.SETRANGE("No.", Rec."No.");
+                        REPORT.RUN(REPORT::"Sales Order Shortage", TRUE, FALSE, Grcd_SalesHeader);
+                    END
+                    ELSE
+                        IF Gbol_ShowShort AND (Rec."Print Flag" <> 0) THEN BEGIN
+                            IF CONFIRM(Text0001) THEN BEGIN
+                                GetSourceDocOutbound.CreateFromSalesOrder(Rec);
+                                IF NOT Rec.FIND('=><') THEN
+                                    Rec.INIT;
+                            END
+                            ELSE BEGIN
+                                Grcd_SalesHeader.RESET;
+                                Grcd_SalesHeader.SETRANGE("Document Type", Rec."Document Type");
+                                Grcd_SalesHeader.SETRANGE("No.", Rec."No.");
+                                REPORT.RUN(REPORT::"Sales Order Shortage", TRUE, FALSE, Grcd_SalesHeader);
+                            END;
+                        END
+                        ELSE BEGIN
+                            GetSourceDocOutbound.CreateFromSalesOrder(Rec);
+                            IF NOT Rec.FIND('=><') THEN
+                                Rec.INIT;
+                        END;
+                    //MODIFY;
+                end;
+            }
+        }
+
         addafter("&Print")
         {
             action("Order Confirmation English")
@@ -327,6 +393,7 @@ pageextension 59021 "TP Sales Order" extends "Sales Order"
                     ENSalesOrder: Report "EN Sales Order";
                     SalesHeader: Record "Sales Header";
                 begin
+                    Rec.TestField(Status, SalesHeader.Status::Released);
                     SalesHeader.SetRange("Document Type", Rec."Document Type"::Order);
                     SalesHeader.SetRange("No.", Rec."No.");
                     ENSalesOrder.SetTableView(SalesHeader);
@@ -345,6 +412,7 @@ pageextension 59021 "TP Sales Order" extends "Sales Order"
                     CNSalesOrder: Report "CN Sales Order";
                     SalesHeader: Record "Sales Header";
                 begin
+                    Rec.TestField(Status, SalesHeader.Status::Released);
                     SalesHeader.SetRange("Document Type", Rec."Document Type"::Order);
                     SalesHeader.SetRange("No.", Rec."No.");
                     CNSalesOrder.SetTableView(SalesHeader);
@@ -354,6 +422,13 @@ pageextension 59021 "TP Sales Order" extends "Sales Order"
         }
     }
 
+
+
     var
         TPUtilities: Codeunit "TP Utilities";
+        Gbol_ShowShort: Boolean;
+        Grcd_SalesLine: Record "Sales Line";
+        Grcd_SalesHeader: Record "Sales Header";
+        SalesInfoPaneMgt: Codeunit "Sales Info-Pane Management";
+        Text0001: Label 'Some Item inventory is not enough in the Sales Order, Do you have printed the shortage report and create warehouse shipment?';
 }

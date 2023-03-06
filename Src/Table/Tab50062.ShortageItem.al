@@ -1,4 +1,4 @@
-table 50062 "Shortage Item"
+table 50026 "Shortage Item"
 {
 
     fields

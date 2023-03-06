@@ -67,6 +67,10 @@ page 50096 "TP Cust Statistics Report"
                 {
                     ApplicationArea = All;
                 }
+                field("Order Date"; Rec."Order Date")
+                {
+                    ApplicationArea = All;
+                }
                 field("External Document No."; Rec."External Document No.")
                 {
                     ApplicationArea = All;
@@ -151,6 +155,7 @@ page 50096 "TP Cust Statistics Report"
     var
         ValueEntry: Record "Value Entry";
         SalesCrMemoLine: Record "Sales Cr.Memo Line";
+        SalesCrMemoHeader: Record "Sales Cr.Memo Header";
         window: Dialog;
         ItemLedgerEntry: Record "Item Ledger Entry";
         SalesInvoiceLine: Record "Sales Invoice Line";
@@ -196,6 +201,7 @@ page 50096 "TP Cust Statistics Report"
                     if SalesHeader.get(SalesHeader."Document Type"::Order, Rec."Sales Order No.") then begin
                         Rec."Machine Model" := SalesHeader."Machine Model";
                         Rec."Document Type" := SalesHeader."Order Type";
+                        Rec."Order Date" := SalesHeader."Order Date";
                     end;
                     Rec.Insert();
                 end;
@@ -213,10 +219,23 @@ page 50096 "TP Cust Statistics Report"
                 window.Update(1, SalesCrMemoLine."No.");
                 if SalesCrMemoLine.Quantity <> 0 then begin
                     Rec.Init();
-                    Rec.TransferFields(SalesCrMemoLine);
+                    // Rec.TransferFields(SalesCrMemoLine);
                     // Rec."Document No." := SalesCrMemoLine."Document No.";
-                    // Rec."Line No." := SalesCrMemoLine."Line No.";                   
-                    Rec.Insert();
+                    // Rec."Line No." := SalesCrMemoLine."Line No.";
+
+                    Rec."Posting Date" := SalesCrMemoLine."Posting Date";
+                    Rec."Customer Code" := SalesCrMemoLine."Sell-to Customer No.";
+                    Rec."Document No." := SalesCrMemoLine."Document No.";
+                    Rec."Item No." := SalesCrMemoLine."No.";
+                    Rec."Sales Amount" := SalesCrMemoLine.Amount;
+                    Rec."Invoiced Quantity" := SalesCrMemoLine.Quantity;
+                    if SalesCrMemoHeader.get(SalesCrMemoLine."Document No.") then begin
+                        Rec."External Document No." := SalesCrMemoHeader."External Document No.";
+                        Rec."Document Type" := SalesCrMemoHeader."Order Type";
+                        Rec."Machine Model" := SalesCrMemoHeader."Machine Model";
+                    end;
+
+                    if Rec.Insert() then;
                 end;
             until SalesCrMemoLine.Next() = 0;
 

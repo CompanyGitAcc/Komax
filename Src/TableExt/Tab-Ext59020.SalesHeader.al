@@ -138,9 +138,9 @@ tableextension 59020 "TP Sales Header" extends "Sales Header"
             FieldClass = FlowField;
             CalcFormula = Sum("Sales Line"."Shipped Not Invoiced" WHERE("Document Type" = FIELD("Document Type"), "Document No." = FIELD("No.")));
         }
-        field(50027; "Partial Shiped"; Option)
+        field(50027; "Partial Shipped"; Option)
         {
-            Caption = 'Partial Shiped';
+            Caption = 'Partial Shipped';
             OptionCaption = 'Accepted,Not accepted';
             OptionMembers = "Accepted","Not accepted";
         }
@@ -229,6 +229,10 @@ tableextension 59020 "TP Sales Header" extends "Sales Header"
         {
             Caption = 'Everything Is Invoiced';
         }
+        field(50045; "Completely Invoiced"; Boolean)
+        {
+            Caption = 'Completely Invoiced';
+        }
 
         modify("Sell-to Customer No.")
         {
@@ -237,21 +241,21 @@ tableextension 59020 "TP Sales Header" extends "Sales Header"
                 Customer: Record Customer;
                 Lrcd_ShipAddress: Record "Ship-to Address";
             begin
-                // if Customer.get("Sell-to Customer No.") then begin
-                //     // "Sales Person" := Cust."Sales Person";
-                //     "Service Person" := Customer."Service Person";
+                if Customer.get("Sell-to Customer No.") then begin
+                    //     // "Sales Person" := Cust."Sales Person";
+                    //     "Service Person" := Customer."Service Person";
 
-                //     Lrcd_ShipAddress.RESET;
-                //     Lrcd_ShipAddress.SETRANGE(Lrcd_ShipAddress."Customer No.", "Sell-to Customer No.");
-                //     Lrcd_ShipAddress.SETFILTER(Lrcd_ShipAddress.Code, '<>%1', '');
-                //     IF Lrcd_ShipAddress.FIND('-') THEN
-                //         VALIDATE("Ship-to Code", Lrcd_ShipAddress.Code)
-                //     ELSE
-                //         VALIDATE("Ship-to Code", '');
-                //     //++BC190.Deposit1.00
-                //     "Advance Payment %" := Customer."Advance Payment %";
-                //     //--BC190.Deposit1.00
-                // end;
+                    //     Lrcd_ShipAddress.RESET;
+                    //     Lrcd_ShipAddress.SETRANGE(Lrcd_ShipAddress."Customer No.", "Sell-to Customer No.");
+                    //     Lrcd_ShipAddress.SETFILTER(Lrcd_ShipAddress.Code, '<>%1', '');
+                    //     IF Lrcd_ShipAddress.FIND('-') THEN
+                    //         VALIDATE("Ship-to Code", Lrcd_ShipAddress.Code)
+                    //     ELSE
+                    //         VALIDATE("Ship-to Code", '');
+                    //++BC190.Deposit1.00
+                    "Advance Payment %" := Customer."Advance Payment %";
+                    //--BC190.Deposit1.00
+                end;
             end;
         }
 

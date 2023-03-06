@@ -1,4 +1,4 @@
-table 50075 "PPI With Vendor"
+table 50035 "PPI With Vendor"
 {
     // DrillDownPageID = "Customer Sales Buffer";
     // LookupPageID = "Customer Sales Buffer";

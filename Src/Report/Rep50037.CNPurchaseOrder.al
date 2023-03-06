@@ -251,6 +251,9 @@ report 50037 "CN Purchase Order"
                 column(VAT__; "VAT %")
                 {
                 }
+                column(Blanket_Order_No_; "Blanket Order No.")
+                {
+                }
                 trigger OnAfterGetRecord()
                 var
                     ExtendTxt: Record "Extended Text Line";

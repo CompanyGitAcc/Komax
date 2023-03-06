@@ -327,6 +327,8 @@ xmlport 50027 "Import PLM Item"
 
                             end;
                             Grcd_ItemImport.INSERT;
+                            Grcd_ItemImport.Validate("Global Dimension 2 Code");
+                            Grcd_ItemImport.Modify();
                         END;
                     END;
 

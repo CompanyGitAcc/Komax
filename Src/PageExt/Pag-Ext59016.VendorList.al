@@ -20,6 +20,10 @@ pageextension 59016 "TP Vendor List" extends "Vendor List"
                 Caption = 'Created At';
             }
         }
+        modify("Payment Terms Code")
+        {
+            Visible = true;
+        }
     }
     actions
     {

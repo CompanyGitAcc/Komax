@@ -7,7 +7,7 @@ tableextension 59067 "TP Detailed Cust. Ledg. Entry" extends "Detailed Cust. Led
         //     Caption = 'Jinsui Invoice No.';
         // }
         //++Deposit
-        field(60001; "Order No."; Code[20])
+        field(60001; "Order No."; Code[500])
         {
             Caption = 'Order No.';
             DataClassification = ToBeClassified;

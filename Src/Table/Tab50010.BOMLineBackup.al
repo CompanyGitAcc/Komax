@@ -95,7 +95,7 @@ table 50010 "BOMLine Backup"
         field(50004; "Sorce No."; Code[20])
         {
         }
-        field(50005; DeleteFalg; Boolean)
+        field(50005; ImportFlag; Boolean)
         {
             Description = 'STEP1.00 This Field is used PLM import to NAV Programe. Delete Prohibitted';
             Editable = false;

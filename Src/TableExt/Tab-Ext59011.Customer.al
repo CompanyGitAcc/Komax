@@ -261,6 +261,11 @@ tableextension 59011 "TP Customer" extends Customer
                     "Bill to Address" := Address;
             end;
         }
+
+    }
+    fieldgroups
+    {
+        addlast(DropDown; "Name 2") { }
     }
 
     procedure VerifyUser()

@@ -1,4 +1,4 @@
-table 50074 "Customer Item Sales Buffer"
+table 50034 "Customer Item Sales Buffer"
 {
     // DrillDownPageID = "Customer Sales Buffer";
     // LookupPageID = "Customer Sales Buffer";
@@ -61,6 +61,14 @@ table 50074 "Customer Item Sales Buffer"
         {
             Caption = 'Machine Model';
             TableRelation = "Machine Model";
+        }
+        field(14; "Line No."; Integer)
+        {
+            Caption = 'Line No.';
+        }
+        field(15; "Order Date"; Date)
+        {
+            Caption = 'Order Date';
         }
     }
 

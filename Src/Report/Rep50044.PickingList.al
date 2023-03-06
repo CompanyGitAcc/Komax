@@ -298,7 +298,9 @@ report 50044 "Picking List 2"
                     trigger OnAfterGetRecord()
                     var
                         SalesLine: Record "Sales Line";
+                        char: Char;
                     begin
+                        SODescription := '';
                         if SumUpLines then begin
                             TempWhseActivLine.Get("Activity Type", "No.", "Line No.");
                             "Qty. (Base)" := TempWhseActivLine."Qty. (Base)";
@@ -310,7 +312,10 @@ report 50044 "Picking List 2"
                             SalesLine.SetRange(Type, SalesLine.Type::" ");
                             SalesLine.SetRange("Document No.", "Source No.");
                             if SalesLine.FindFirst() then begin
-                                SODescription := SalesLine.Description;
+                                repeat
+                                    SODescription := SODescription + SalesLine.Description + ' ; ';
+                                until SalesLine.Next() = 0;
+
                             end;
                             SONo := "Source No.";
                             if SalesHeader.get(SalesHeader."Document Type"::Order, "Source No.") then begin
@@ -430,7 +435,7 @@ report 50044 "Picking List 2"
         WhseActLineDueDateCaptionLbl: Label 'Due Date';
         QtyHandledCaptionLbl: Label 'Qty. Handled';
         EmptyStringCaptionLbl: Label '____________';
-        SODescription: Text[100];
+        SODescription: Text[300];
         SONO: Code[20];
         SalesHeader: Record "Sales Header";
         CustomerNo: Code[20];

@@ -102,5 +102,9 @@ tableextension 59012 "TP Vendor" extends "Vendor"
         //     Caption = 'Last Statement No.';
         // }
     }
+    fieldgroups
+    {
+        addlast(DropDown; "Name 2") { }
+    }
 
 }

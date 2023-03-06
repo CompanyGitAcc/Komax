@@ -15,9 +15,17 @@ pageextension 59151 "TP Purch. Receipt Lines" extends "Purch. Receipt Lines"
                 Caption = 'Posted Invoice No.';
                 ApplicationArea = all;
             }
-            field(VendInvNo; VendInvNo)
+            field("Vendor Invoice No."; Rec."Vendor Invoice No.")
             {
-                Caption = 'Vendor Invoice No.';
+                ApplicationArea = all;
+            }
+            // field(VendInvNo; VendInvNo)
+            // {
+            //     Caption = 'Vendor Invoice No.';
+            //     ApplicationArea = all;
+            // }
+            field("Posting Date"; Rec."Posting Date")
+            {
                 ApplicationArea = all;
             }
         }
@@ -27,6 +35,27 @@ pageextension 59151 "TP Purch. Receipt Lines" extends "Purch. Receipt Lines"
         }
 
     }
+
+    trigger OnOpenPage()
+    var
+        PurchInvHeader: Record "Purch. Inv. Header";
+        PurchRceiptLine: Record "Purch. Rcpt. Line";
+    begin
+        PurchRceiptLine.Reset();
+        PurchRceiptLine.SetRange(Type, PurchRceiptLine.Type::Item);
+        PurchRceiptLine.Setfilter("Quantity Invoiced", '<>0');
+        PurchRceiptLine.SetRange("Vendor Invoice No.", '');
+        if PurchRceiptLine.FindFirst() then
+            repeat
+                PurchRceiptLine.CalcFields("Posted Invoice No.");
+                If PurchInvHeader.Get(PurchRceiptLine."Posted Invoice No.") then
+                    PurchRceiptLine."Vendor Invoice No." := PurchInvHeader."Vendor Invoice No."
+                else
+                    PurchRceiptLine."Vendor Invoice No." := '';
+                PurchRceiptLine.Modify();
+            until PurchRceiptLine.Next() = 0;
+        Commit();
+    end;
 
     trigger OnAfterGetRecord()
     var
@@ -54,5 +83,5 @@ pageextension 59151 "TP Purch. Receipt Lines" extends "Purch. Receipt Lines"
 
     var
         PostedWhseDocNo: Code[20];
-        VendInvNo: Code[20];
+        VendInvNo: Code[100];
 }

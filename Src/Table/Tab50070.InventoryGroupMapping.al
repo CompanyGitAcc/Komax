@@ -1,4 +1,4 @@
-table 50070 "Inventory Group Mapping"
+table 50030 "Inventory Group Mapping"
 {
     DrillDownPageID = "Inventory Group Mapping";
     LookupPageID = "Inventory Group Mapping";

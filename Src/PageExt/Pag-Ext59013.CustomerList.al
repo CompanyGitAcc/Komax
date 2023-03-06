@@ -43,6 +43,14 @@ pageextension 59013 "TP Customer List" extends "Customer List"
                 Caption = 'Created At';
             }
         }
+        modify("Payment Terms Code")
+        {
+            Visible = true;
+        }
+        modify("Credit Limit (LCY)")
+        {
+            Visible = true;
+        }
     }
     actions
     {

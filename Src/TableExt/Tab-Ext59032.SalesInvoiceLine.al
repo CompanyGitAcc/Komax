@@ -24,6 +24,27 @@ tableextension 59032 "TP Sales Invoice Line" extends "Sales Invoice Line"
             FieldClass = FlowField;
             CalcFormula = Lookup("Unit of Measure"."Short Description" WHERE(Code = FIELD("Unit of Measure Code")));
         }
+        //以下为Earning Report用的字段
+        field(60003; "Sales Amount"; Decimal)
+        {
+            Caption = 'Sales Amount';
+        }
+        field(60004; "Cost Of Sales"; Decimal)
+        {
+            Caption = 'Cost Of Sales';
+        }
+        field(60005; "Cost ACIE"; Decimal)
+        {
+            Caption = 'Cost ACIE';
+        }
+        field(60006; "Item Charge Amount"; Decimal)
+        {
+            Caption = 'Item Charge Amount';
+        }
+        field(60007; "Discount Amount"; Decimal)
+        {
+            Caption = 'Discount Amount';
+        }
         // field(50003; "Commision"; Decimal)
         // {
         //     Caption = 'Commision';
@@ -37,14 +58,13 @@ tableextension 59032 "TP Sales Invoice Line" extends "Sales Invoice Line"
         //     Caption = 'Komax Reason Code';
         //     TableRelation = "Reason Code";
         // }
-        // field(50007; "Sales Type"; Code[20])
-        // {
-        //     Caption = 'Sales Type';
-        //     // TableRelation = "Sales Type".Code;
-        // }
-        // field(50008; "Sales Commision (%)"; Decimal)
-        // {
-        //     Caption = 'Sales Commision (%)';
-        // }
+        field(50007; "Order Type"; Enum "Sales Order Type")
+        {
+            Caption = 'Order Type';
+        }
+        field(50008; "External Document No."; Code[35])
+        {
+            Caption = 'External Document No.';
+        }
     }
 }

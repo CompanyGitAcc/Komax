@@ -19,6 +19,10 @@ pageextension 59008 "TP GL Setup" extends "General Ledger Setup"
             // {
             //     ApplicationArea = all;
             // }
+            field("Inventory Account Filter"; Rec."Inventory Account Filter")
+            {
+                ApplicationArea = all;
+            }
         }
     }
 }

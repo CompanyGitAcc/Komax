@@ -233,7 +233,7 @@ pageextension 59044 "TP Purchase Order List" extends "Purchase Order List"
                     // PurchaseHeader.SetRange("No.", Rec."No.");
                     // ENPurchaseOrder.SetTableView(PurchaseHeader);
                     // ENPurchaseOrder.RunModal();
-
+                    Rec.TestField(Status, PurchaseHeader.Status::Released);
                     PurchaseHeader.Reset();
                     CurrPage.SetSelectionFilter(PurchaseHeader);
                     if PurchaseHeader.FindFirst() then
@@ -268,7 +268,7 @@ pageextension 59044 "TP Purchase Order List" extends "Purchase Order List"
                     // PurchaseHeader.SetRange("No.", Rec."No.");
                     // CNPurchaseOrder.SetTableView(PurchaseHeader);
                     // CNPurchaseOrder.RunModal();
-
+                    Rec.TestField(Status, PurchaseHeader.Status::Released);
                     PurchaseHeader.Reset();
                     CurrPage.SetSelectionFilter(PurchaseHeader);
                     if PurchaseHeader.FindFirst() then

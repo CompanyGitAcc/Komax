@@ -19,9 +19,12 @@ tableextension 59022 "TP Sales Invoice Header" extends "Sales Invoice Header"
         //==============================================================================
         //++NAV2009  说明：以下字段是从老系统迁移过来的字段，部分不再使用的字段已注释掉
         //==============================================================================
-        field(50015; "Order Type"; Enum "Sales Order Type")
+        field(50019; "Order Type"; Enum "Sales Order Type")
         {
             Caption = 'Order Type';
+            Editable = false;
+            // FieldClass = FlowField;
+            // CalcFormula = lookup("Sales Header"."Order Type" where("No." = field("Order No.")));
         }
         // field(50016; "Jinsui Invoice No.s"; Integer)
         // {
@@ -41,7 +44,7 @@ tableextension 59022 "TP Sales Invoice Header" extends "Sales Invoice Header"
         //     // FieldClass = FlowField;
         //     // CalcFormula = Count("Jinsui Invoice" WHERE("Navision Doc No." = FIELD("No."), Status = CONST(Cancelled)))
         // }
-        field(50019; "Bill-to Department"; Option)
+        field(50023; "Bill-to Department"; Option)
         {
             Caption = 'Bill-to Department';
             OptionCaption = ' ,Finance Dept.,Warehouse,Purchase Dept.';

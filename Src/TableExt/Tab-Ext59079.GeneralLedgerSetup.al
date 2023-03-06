@@ -22,6 +22,10 @@ tableextension 59079 "TP General Ledger Setup" extends "General Ledger Setup"
         {
             Caption = 'Hide Blocked COA';
         }
+        field(50005; "Inventory Account Filter"; text[200])
+        {
+            Caption = 'Inventory Account Filter';
+        }
     }
 
 }

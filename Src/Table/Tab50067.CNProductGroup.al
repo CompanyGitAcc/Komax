@@ -1,4 +1,4 @@
-table 50067 "TP Product Group"
+table 50027 "TP Product Group"
 {
     Caption = 'Product Group';
     LookupPageId = "TP Product Group";

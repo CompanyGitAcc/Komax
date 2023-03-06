@@ -154,6 +154,14 @@ pageextension 59046 "TP Purchase Order Subform" extends "Purchase Order Subform"
             Visible = true;
         }
         moveafter("Item Reference No."; "Line No.")
+
+        modify("Planned Receipt Date")
+        {
+            Visible = true;
+        }
+
+        moveafter("No."; Quantity)
+        moveafter(Quantity; "Direct Unit Cost")
     }
     actions
     {

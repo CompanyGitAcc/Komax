@@ -1,4 +1,4 @@
-table 50073 "Way Of Dispatch"
+table 50033 "Way Of Dispatch"
 {
     DrillDownPageID = "Way Of Dispatch";
     LookupPageID = "Way Of Dispatch";

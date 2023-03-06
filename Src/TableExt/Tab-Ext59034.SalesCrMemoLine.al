@@ -28,5 +28,26 @@ tableextension 59034 "TP Sales Cr.Memo Line" extends "Sales Cr.Memo Line"
         {
             Caption = 'Sales Commision (%)';
         }
+        //以下为Earning Report用的字段
+        field(60003; "Sales Amount"; Decimal)
+        {
+            Caption = 'Sales Amount';
+        }
+        field(60004; "Cost Of Sales"; Decimal)
+        {
+            Caption = 'Cost Of Sales';
+        }
+        field(60005; "Cost ACIE"; Decimal)
+        {
+            Caption = 'Cost ACIE';
+        }
+        field(60006; "Item Charge Amount"; Decimal)
+        {
+            Caption = 'Item Charge Amount';
+        }
+        field(60007; "Discount Amount"; Decimal)
+        {
+            Caption = 'Discount Amount';
+        }
     }
 }

@@ -27,9 +27,9 @@ tableextension 59097 "TP Production BOM Line" extends "Production BOM Line"
         {
             Caption = 'Description 2';
         }
-        field(50006; "DeleteFalg"; Boolean)
+        field(50006; "ImportFlag"; Boolean)
         {
-            Caption = 'DeleteFalg';
+            Caption = 'ImportFlag';
         }
         field(50007; "Production Lead Time"; DateFormula)
         {

@@ -1,4 +1,4 @@
-page 59091 "Prod. BOM Lines"
+page 50091 "Prod. BOM Lines"
 {
     Caption = 'Prod. BOM Lines';
     PageType = List;
@@ -15,10 +15,6 @@ page 59091 "Prod. BOM Lines"
                     ApplicationArea = All;
                 }
                 field("Line No."; Rec."Line No.")
-                {
-                    ApplicationArea = All;
-                }
-                field("Version Code"; Rec."Version Code")
                 {
                     ApplicationArea = All;
                 }
@@ -57,4 +53,9 @@ page 59091 "Prod. BOM Lines"
             }
         }
     }
+
+    trigger OnOpenPage()
+    begin
+        Rec.SetRange("Version Code", '');
+    end;
 }

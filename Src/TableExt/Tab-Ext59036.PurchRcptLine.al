@@ -35,7 +35,11 @@ tableextension 59036 "TP Purchase Receipt Line" extends "Purch. Rcpt. Line"
             Editable = false;
         }
 
-        field(50000; "PO Qty."; Decimal)
+        field(59007; "Vendor Invoice No."; Code[100])
+        {
+            Caption = 'Vendor Invoice No.';
+        }
+        field(59008; "PO Qty."; Decimal)
         {
             Caption = 'PO Qty.';
             FieldClass = FlowField;

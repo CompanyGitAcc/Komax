@@ -335,6 +335,7 @@ pageextension 59045 "TP Purchase Order" extends "Purchase Order"
                     ENPurchaseOrder: Report "EN Purchase Order";
                     PurchaseHeader: Record "Purchase Header";
                 begin
+                    Rec.TestField(Status, PurchaseHeader.Status::Released);
                     PurchaseHeader.SetRange("Document Type", Rec."Document Type"::Order);
                     PurchaseHeader.SetRange("No.", Rec."No.");
                     ENPurchaseOrder.SetTableView(PurchaseHeader);
@@ -353,6 +354,7 @@ pageextension 59045 "TP Purchase Order" extends "Purchase Order"
                     CNPurchaseOrder: Report "CN Purchase Order";
                     PurchaseHeader: Record "Purchase Header";
                 begin
+                    Rec.TestField(Status, PurchaseHeader.Status::Released);
                     PurchaseHeader.SetRange("Document Type", Rec."Document Type"::Order);
                     PurchaseHeader.SetRange("No.", Rec."No.");
                     CNPurchaseOrder.SetTableView(PurchaseHeader);

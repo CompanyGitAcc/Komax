@@ -131,6 +131,13 @@ pageextension 59022 "TP Sales Order Subform" extends "Sales Order Subform"
                 ApplicationArea = all;
             }
         }
+
+
+        modify("Requested Delivery Date")
+        {
+            Visible = true;
+        }
+        moveafter("Shipment Date"; "Requested Delivery Date")
     }
 
     actions

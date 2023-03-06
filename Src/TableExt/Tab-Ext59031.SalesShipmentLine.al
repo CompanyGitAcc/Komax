@@ -42,5 +42,23 @@ tableextension 59031 "TP Sales Shipment Line" extends "Sales Shipment Line"
             FieldClass = FlowField;
             CalcFormula = lookup("Sales Header"."Order Type" where("No." = field("Order No.")));
         }
+        field(60005; "External Document No."; Code[35])
+        {
+            Caption = 'External Document No.';
+            FieldClass = FlowField;
+            CalcFormula = lookup("Sales Header"."External Document No." where("No." = field("Order No.")));
+        }
+        field(60006; "Posting Date 2"; Date)
+        {
+            Caption = 'Posting Date';
+            FieldClass = FlowField;
+            CalcFormula = lookup("Sales Shipment Header"."Posting Date" where("No." = field("Document No.")));
+        }
+        field(60007; "Order Date"; Date)
+        {
+            Caption = 'Order Date';
+            FieldClass = FlowField;
+            CalcFormula = lookup("Sales Shipment Header"."Order Date" where("No." = field("Document No.")));
+        }
     }
 }

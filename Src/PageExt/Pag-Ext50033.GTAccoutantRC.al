@@ -20,6 +20,27 @@ pageextension 50033 "TP Accountant Role Center" extends "Accountant Role Center"
                     RunObject = Page "TP Earning Analysis Report";
                 }
 
+                action("Intermin Details")
+                {
+                    ApplicationArea = Basic, Suite;
+                    Image = Report;
+                    Caption = 'Intermin Details';
+                    RunObject = Page "Intermin Details";
+                }
+                action("CN Aged Account Receivables")
+                {
+                    ApplicationArea = Basic, Suite;
+                    Image = Report;
+                    Caption = 'CN Aged Account Receivables';
+                    RunObject = report "CN Aged Accounts Receivable";
+                }
+                action("CN Inventory Valuation")
+                {
+                    ApplicationArea = Basic, Suite;
+                    Image = Report;
+                    Caption = 'CN Inventory Valuation';
+                    RunObject = report "CN Inventory Valuation";
+                }
             }
         }
 
@@ -30,6 +51,13 @@ pageextension 50033 "TP Accountant Role Center" extends "Accountant Role Center"
                 ApplicationArea = Basic, Suite;
                 Caption = 'Posted Purchase Receipts';
                 RunObject = Page "Posted Purchase Receipts";
+            }
+            action("Posted Documents Check")
+            {
+                ApplicationArea = Basic, Suite;
+                Caption = 'Posted Documents';
+                Image = LedgerEntries;
+                RunObject = Page "Posted Documents";
             }
         }
 

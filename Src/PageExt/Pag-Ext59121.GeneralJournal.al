@@ -24,6 +24,14 @@ pageextension 59121 "TP General Journal" extends "General Journal"
                 ApplicationArea = all;
             }
         }
+        modify("Applies-to Doc. Type")
+        {
+            Visible = true;
+        }
+        modify("Applies-to Doc. No.")
+        {
+            Visible = true;
+        }
     }
 
     // trigger OnAfterGetRecord()

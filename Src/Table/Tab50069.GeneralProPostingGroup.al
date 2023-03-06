@@ -1,4 +1,4 @@
-table 50069 "Product Group Mapping"
+table 50029 "Product Group Mapping"
 {
     DrillDownPageID = "Product Group Mapping";
     LookupPageID = "Product Group Mapping";

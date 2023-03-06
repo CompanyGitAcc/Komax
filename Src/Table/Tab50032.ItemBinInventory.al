@@ -1,4 +1,4 @@
-table 50032 "Item Bin Inventory"
+table 50022 "Item Bin Inventory"
 {
     // //STEP1.00  110401  Gary  This Table will show inventory detail
 

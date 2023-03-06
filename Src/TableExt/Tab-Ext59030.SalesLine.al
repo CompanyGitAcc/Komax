@@ -79,7 +79,7 @@ tableextension 59030 "TP Sales Line" extends "Sales Line"
         {
             Caption = 'External Document No.';
             FieldClass = FlowField;
-            CalcFormula = lookup("Sales Header"."External Document No." where("Document Type" = const(Quote), "No." = field("Document No.")));
+            CalcFormula = lookup("Sales Header"."External Document No." where("No." = field("Document No.")));
         }
         field(59024; "Document Date"; Date)
         {
@@ -101,6 +101,10 @@ tableextension 59030 "TP Sales Line" extends "Sales Line"
             Caption = 'Status';
             FieldClass = FlowField;
             CalcFormula = lookup("Sales Header".Status where("Document Type" = const(Order), "No." = field("Document No.")));
+        }
+        field(59003; OrderStatus2; Enum "Sales Document Status")
+        {
+            Caption = 'Order Status';
         }
         field(59005; "Order Date"; Date)
         {
@@ -162,6 +166,24 @@ tableextension 59030 "TP Sales Line" extends "Sales Line"
             Caption = 'Sales Person';
             FieldClass = FlowField;
             CalcFormula = lookup("Sales Header"."Sales Person" where("Document Type" = const(Order), "No." = field("Document No.")));
+        }
+        field(59035; "Partial Shipped"; Option)
+        {
+            Caption = 'Partial Shipped';
+            OptionCaption = 'Accepted,Not accepted';
+            OptionMembers = "Accepted","Not accepted";
+            FieldClass = FlowField;
+            CalcFormula = lookup("Sales Header"."Partial Shipped" where("Document Type" = const(Order), "No." = field("Document No.")));
+        }
+        field(59036; "Assigned User ID"; Code[20])
+        {
+            Caption = 'Assigned User ID';
+            FieldClass = FlowField;
+            CalcFormula = lookup("Sales Header"."Assigned User ID" where("Document Type" = const(Order), "No." = field("Document No.")));
+        }
+        field(59037; "Order Type 2"; Enum "Sales Order Type")
+        {
+            Caption = 'Order Type';
         }
         modify("No.")
         {

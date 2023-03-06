@@ -1,4 +1,4 @@
-page 59092 "Edit Reservation Entries"
+page 50092 "Edit Reservation Entries"
 {
     Caption = 'Reservation Entries';
     PageType = List;

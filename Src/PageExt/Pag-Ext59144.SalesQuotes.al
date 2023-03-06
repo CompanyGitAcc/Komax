@@ -62,7 +62,6 @@ pageextension 59144 "TP Sales Quotes" extends "Sales Quotes"
                     // SalesHeader.SetRange("No.", Rec."No.");
                     // ENSalesQuote.Settableview(Salesheader);
                     // ENSalesQuote.Runmodal();
-
                     SalesHeader.Reset();
                     CurrPage.SetSelectionFilter(SalesHeader);
                     if SalesHeader.FindFirst() then
@@ -97,7 +96,6 @@ pageextension 59144 "TP Sales Quotes" extends "Sales Quotes"
                     // SalesHeader.SetRange("No.", Rec."No.");
                     // CNSalesQuote.Settableview(Salesheader);
                     // CNSalesQuote.Runmodal();
-
                     SalesHeader.Reset();
                     CurrPage.SetSelectionFilter(SalesHeader);
                     if SalesHeader.FindFirst() then

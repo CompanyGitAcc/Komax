@@ -44,9 +44,9 @@ pageextension 59090 "TP Warehouse Receipts" extends "Warehouse Receipts"
 
         addafter("No.")
         {
-            field(SourceNo; SourceNo)
+            field("Source No."; Rec."Source No.")
             {
-                Caption = 'SourceNo';
+                Caption = 'Source No.';
                 ApplicationArea = all;
             }
         }
@@ -123,18 +123,18 @@ pageextension 59090 "TP Warehouse Receipts" extends "Warehouse Receipts"
         }
     }
     var
-        SourceNo: Code[20];
+        // SourceNo: Code[20];
         WarehouseReceiptLine: Record "Warehouse Receipt Line";
         PurchaseLine: Record "Purchase Line";
 
     trigger OnAfterGetRecord()
     begin
-        WarehouseReceiptLine.Reset();
-        WarehouseReceiptLine.SetRange("No.", Rec."No.");
-        if WarehouseReceiptLine.FindFirst() then begin
-            SourceNo := WarehouseReceiptLine."Source No.";
-        end else
-            SourceNo := '';
+        // WarehouseReceiptLine.Reset();
+        // WarehouseReceiptLine.SetRange("No.", Rec."No.");
+        // if WarehouseReceiptLine.FindFirst() then begin
+        //     SourceNo := WarehouseReceiptLine."Source No.";
+        // end else
+        //     SourceNo := '';
 
 
         TotalQuantity := 0;

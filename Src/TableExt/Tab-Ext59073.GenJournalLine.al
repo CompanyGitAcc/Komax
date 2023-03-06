@@ -27,5 +27,8 @@ tableextension 59073 "TP Gen. Journal Line" extends "Gen. Journal Line"
             DataClassification = ToBeClassified;
         }
         //--Deposit
+
     }
+
+
 }

@@ -4,7 +4,21 @@ codeunit 50012 "TP Events Handler"
     tabledata "Sales Cr.Memo Header" = rmd,
     tabledata "Purch. Inv. Header" = rmd,
     tabledata "G/L Entry" = rmd,
-    tabledata "Purch. Cr. Memo Hdr." = rmd;
+    tabledata "Purch. Cr. Memo Hdr." = rmd,
+    tabledata "Cust. Ledger Entry" = rmd,
+    tabledata "Detailed Cust. Ledg. Entry" = rmd;
+
+
+    //==================================================================================================
+    //ALF.23/02/09
+    //Update CLE fields
+    //==================================================================================================
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Cust. Entry-Edit", 'OnBeforeCustLedgEntryModify', '', true, true)]
+    local procedure MyProcedure(var CustLedgEntry: Record "Cust. Ledger Entry"; FromCustLedgEntry: Record "Cust. Ledger Entry")
+    begin
+        CustLedgEntry.Validate("Order No.", FromCustLedgEntry."Order No.");
+        CustLedgEntry.Validate("Advance Payment", FromCustLedgEntry."Advance Payment");
+    end;
 
     //==================================================================================================
     //BC190.Deposit1.00.ALF.22/11/20
@@ -320,7 +334,7 @@ codeunit 50012 "TP Events Handler"
     end;
 
     //==================================================================================================
-    //++YK001 - FH: 在销售发票上GetShipmentLine的时候将必填字段从销售订单头复制到采购发票头
+    //++YK001 - FH: 在销售发票上GetShipmentLine的时候将必填字段从销售订单头复制到销售发票头
     //==================================================================================================
     [EventSubscriber(ObjectType::Codeunit, 64, 'OnAfterInsertLines', '', false, false)]
     procedure OnAfterInsertSalesLines(var SalesHeader: Record "Sales Header"; var SalesLine: Record "Sales Line")
@@ -332,6 +346,7 @@ codeunit 50012 "TP Events Handler"
             if SalesOrderHeader.get(SalesOrderHeader."Document Type"::Order, SalesShipmentLine."Order No.") then begin
                 SalesHeader.Validate("External Document No.", SalesOrderHeader."External Document No.");
                 SalesHeader.Validate("Order NO.", SalesOrderHeader."No.");
+                SalesHeader.Validate("Order Type", SalesOrderHeader."Order Type");
                 SalesHeader.Modify();
             end;
         end;
@@ -728,6 +743,21 @@ codeunit 50012 "TP Events Handler"
             PurchHeader.Modify();
         end;
     end;
+
+    [EventSubscriber(ObjectType::Report, 393, 'OnBeforeUpdateGnlJnlLineDimensionsFromTempBuffer', '', false, false)]
+    local procedure OnBeforeUpdateGnlJnlLineDimensionsFromTempBuffer(var GenJournalLine: Record "Gen. Journal Line"; TempPaymentBuffer: Record "Payment Buffer" temporary; SummarizePerVend: Boolean)
+    begin
+        GenJournalLine.Description := GenJournalLine."Message to Recipient";
+    end;
+
+    [EventSubscriber(ObjectType::Report, 7318, 'OnAfterSetWhseShipmentLine', '', false, false)]
+    local procedure OnAfterSetWhseShipmentLine(WhseShptLine: Record "Warehouse Shipment Line"; WhseShptHeader: Record "Warehouse Shipment Header"; var SortActivity: Option)
+    var
+        WhseActivitySortingMethod: Enum "Whse. Activity Sorting Method";
+    begin
+        SortActivity := WhseActivitySortingMethod::"Shelf or Bin";
+    end;
+
 
     //==================================================================================================
     //++Harvey - 销售发票过账 把Order No.带到Cust. ledger entry

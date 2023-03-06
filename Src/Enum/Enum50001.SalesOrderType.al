@@ -2,6 +2,10 @@ enum 50051 "Sales Order Type"
 {
     Extensible = true;
 
+    value(33; " ")
+    {
+        Caption = ' ';
+    }
     value(0; Standard)
     {
         Caption = 'Standard';
@@ -134,4 +138,5 @@ enum 50051 "Sales Order Type"
     {
         Caption = 'HT-Trading';
     }
+
 }

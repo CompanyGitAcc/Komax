@@ -29,9 +29,9 @@ tableextension 59096 "TP Production BOM Header" extends "Production BOM Header"
             Caption = 'Rout Link Code Line';
             TableRelation = "Routing Link";
         }
-        field(50006; "DeleteFalg"; Boolean)
+        field(50006; "ImportFlag"; Boolean)
         {
-            Caption = 'DeleteFalg';
+            Caption = 'ImportFlag';
         }
     }
 

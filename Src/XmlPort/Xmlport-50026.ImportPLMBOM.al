@@ -101,7 +101,7 @@ xmlport 50026 "Production BOM Line"
                                 IF STRLEN(I_Index) = 3 THEN
                                     Gcde_VersionCode := I_Index;
 
-
+                    //==================================================================================
                     //Insert or Update BOM Header-------
                     Grcd_ProdBOMHeader.RESET;
                     IF NOT Grcd_ProdBOMHeader.GET(I_BOMHeaderNo) THEN BEGIN
@@ -118,7 +118,7 @@ xmlport 50026 "Production BOM Line"
                         Grcd_ProdBOMHeader."Creation Date" := WORKDATE;
                         Grcd_ProdBOMHeader."Last Date Modified" := WORKDATE;
                         Grcd_ProdBOMHeader."Created By Import" := TRUE;
-                        Grcd_ProdBOMHeader.DeleteFalg := TRUE;
+                        Grcd_ProdBOMHeader.ImportFlag := TRUE;
                         //++ALF amend description
                         if Item.Get(Grcd_ProdBOMHeader."No.") then begin
                             Grcd_ProdBOMHeader.Description := Item.Description;
@@ -129,7 +129,7 @@ xmlport 50026 "Production BOM Line"
                     END ELSE BEGIN
                         Grcd_ProdBOMHeader."BOM Index" := Gcde_VersionCode;
                         Grcd_ProdBOMHeader."Last Date Modified" := WORKDATE;
-                        Grcd_ProdBOMHeader.DeleteFalg := TRUE;
+                        Grcd_ProdBOMHeader.ImportFlag := TRUE;
                         //++ALF amend description
                         if Item.Get(Grcd_ProdBOMHeader."No.") then begin
                             Grcd_ProdBOMHeader.Description := Item.Description;
@@ -149,6 +149,7 @@ xmlport 50026 "Production BOM Line"
                         END;
                     END;
 
+                    //=================================================================================================
                     //插入Production BOM Line
                     IF GetUnitOfMeasere(I_UnitOfMeasureItem) <> 'ERROR' THEN BEGIN
                         Grcd_ProdBOMLine.RESET;
@@ -225,7 +226,7 @@ xmlport 50026 "Production BOM Line"
                             Evaluate(I_Quantity_Dec, I_Quantity);
                             Grcd_ProdBOMLine.VALIDATE(Grcd_ProdBOMLine."Quantity per", I_Quantity_Dec);
                             Grcd_ProdBOMLine.Position := I_Postion;
-                            Grcd_ProdBOMLine.DeleteFalg := TRUE;
+                            Grcd_ProdBOMLine.ImportFlag := TRUE;
                             Grcd_ProdBOMLine.MODIFY;
                         END ELSE BEGIN
                             Gbol_NewItem := TRUE;
@@ -257,25 +258,26 @@ xmlport 50026 "Production BOM Line"
                             Grcd_ProdBOMLine."Quantity per" := I_Quantity_Dec;
                             Grcd_ProdBOMLine.VALIDATE(Grcd_ProdBOMLine."Quantity per", I_Quantity_Dec);
                             Grcd_ProdBOMLine.Position := I_Postion;
-                            Grcd_ProdBOMLine.DeleteFalg := TRUE;
+                            Grcd_ProdBOMLine.ImportFlag := TRUE;
                             if Grcd_ProdBOMLine.Quantity <> 0 then
                                 Grcd_ProdBOMLine.INSERT;
-
-                            //++Harvey1102 临时代码，后续更新: 导入后再删除多余BOM Version，将最后一个Version复制到当前BOM
-                            Grcd_ProdBOMLine2.Init();
-                            Grcd_ProdBOMLine2 := Grcd_ProdBOMLine;
-                            Grcd_ProdBOMLine2."Version Code" := '';
-                            if Grcd_ProdBOMLine2.Quantity <> 0 then
-                                IF Grcd_ProdBOMLine2.Insert() then;
-                            //--Harvey1102
                         END;
+                        //++ALF 将最后一个Version复制到当前BOM
+                        Grcd_ProdBOMLine2.Init();
+                        Grcd_ProdBOMLine2 := Grcd_ProdBOMLine;
+                        Grcd_ProdBOMLine2."Version Code" := '';
+                        Grcd_ProdBOMLine2.ImportFlag := true;
+                        if Grcd_ProdBOMLine2.Quantity <> 0 then
+                            IF not Grcd_ProdBOMLine2.Insert() then
+                                Grcd_ProdBOMLine2.Modify();
+                        //--ALF
                     END ELSE BEGIN
                         Grcd_ProdBOMLine.RESET;
                         Grcd_ProdBOMLine.SETRANGE("Production BOM No.", I_BOMHeaderNo);
                         Grcd_ProdBOMLine.SETRANGE("Version Code", Gcde_VersionCode);
                         Grcd_ProdBOMLine.SETRANGE("No.", I_ItemNo);
                         IF Grcd_ProdBOMLine.FIND('-') THEN BEGIN
-                            Grcd_ProdBOMLine.DeleteFalg := TRUE;
+                            Grcd_ProdBOMLine.ImportFlag := TRUE;
                             if Grcd_Item.get(I_ItemNo) then begin
                                 //++Harvey221221
                                 Grcd_ProdBOMLine.Description := Grcd_Item.Description;
@@ -329,12 +331,26 @@ xmlport 50026 "Production BOM Line"
 
     trigger OnPreXmlPort()
     begin
-        //++Harvey del 221219
-        // Grcd_ProdBOMHeadFlag.RESET;
-        // Grcd_ProdBOMHeadFlag.MODIFYALL(Grcd_ProdBOMHeadFlag.DeleteFalg, FALSE);
-        // Grcd_ProdBOMLineFlag.RESET;
-        // Grcd_ProdBOMLineFlag.MODIFYALL(Grcd_ProdBOMLineFlag.DeleteFalg, FALSE);
-        //--Harvey
+        Window.OPEN('Clearing #1##################');
+        Grcd_ProdBOMHeadFlag.RESET;
+        Grcd_ProdBOMHeadFlag.SetRange(ImportFlag, TRUE);
+        if Grcd_ProdBOMHeadFlag.FindFirst() then
+            repeat
+                Window.Update(1, Grcd_ProdBOMHeadFlag."No.");
+                Grcd_ProdBOMHeadFlag.ImportFlag := false;
+                Grcd_ProdBOMHeadFlag.Modify();
+            until Grcd_ProdBOMHeadFlag.Next() = 0;
+        //Grcd_ProdBOMHeadFlag.MODIFYALL(Grcd_ProdBOMHeadFlag.ImportFlag, FALSE);
+        Grcd_ProdBOMLineFlag.RESET;
+        Grcd_ProdBOMLineFlag.SetRange(ImportFlag, TRUE);
+        if Grcd_ProdBOMLineFlag.FindFirst() then
+            repeat
+                Window.Update(1, Grcd_ProdBOMLineFlag."Production BOM No.");
+                Grcd_ProdBOMLineFlag.ImportFlag := false;
+                Grcd_ProdBOMLineFlag.Modify();
+            until Grcd_ProdBOMLineFlag.Next() = 0;
+        //Grcd_ProdBOMLineFlag.MODIFYALL(Grcd_ProdBOMLineFlag.ImportFlag, FALSE);
+        Window.Close();
 
         Window.OPEN('Process #1################## \' +
                     'Item No.#2##################');
@@ -346,18 +362,18 @@ xmlport 50026 "Production BOM Line"
         BOMLine: Record "Prod. Order Line";
     begin
         Grcd_ProdBOMHeadFlag.RESET;
-        Grcd_ProdBOMHeadFlag.SETRANGE(Grcd_ProdBOMHeadFlag.DeleteFalg, TRUE);
+        Grcd_ProdBOMHeadFlag.SETRANGE(Grcd_ProdBOMHeadFlag.ImportFlag, TRUE);
         IF Grcd_ProdBOMHeadFlag.FIND('-') THEN
             REPEAT
                 Grcd_ProdLineFlag.RESET;
                 Grcd_ProdLineFlag.SETRANGE("Production BOM No.", Grcd_ProdBOMHeadFlag."No.");
                 Grcd_ProdLineFlag.SETRANGE("Version Code", Grcd_ProdBOMHeadFlag."BOM Index");
-                Grcd_ProdLineFlag.SETRANGE(DeleteFalg, TRUE);
+                Grcd_ProdLineFlag.SETRANGE(ImportFlag, TRUE);
                 IF Grcd_ProdLineFlag.FIND('-') THEN BEGIN
                     Grcd_ProdBOMLineFlag.RESET;
                     Grcd_ProdBOMLineFlag.SETRANGE("Production BOM No.", Grcd_ProdBOMHeadFlag."No.");
                     Grcd_ProdBOMLineFlag.SETRANGE("Version Code", Grcd_ProdBOMHeadFlag."BOM Index");
-                    Grcd_ProdBOMLineFlag.SETRANGE(DeleteFalg, FALSE);
+                    Grcd_ProdBOMLineFlag.SETRANGE(ImportFlag, FALSE);
                     IF Grcd_ProdBOMLineFlag.FIND('-') THEN
                         REPEAT
                             Window.UPDATE(1, 'Delete useless BOM Line');
@@ -366,6 +382,20 @@ xmlport 50026 "Production BOM Line"
                                   Grcd_ProdBOMLineFlag."No.", Grcd_ProdBOMLineFlag."Line No.", FALSE, FALSE, FALSE, TRUE, FALSE);
                             Grcd_ProdBOMLineFlag.DELETE;
                         UNTIL Grcd_ProdBOMLineFlag.NEXT = 0;
+                    //++ALF 不带Version的BOM行多余数据删除
+                    Grcd_ProdBOMLineFlag.RESET;
+                    Grcd_ProdBOMLineFlag.SETRANGE("Production BOM No.", Grcd_ProdBOMHeadFlag."No.");
+                    Grcd_ProdBOMLineFlag.SETRANGE("Version Code", '');
+                    Grcd_ProdBOMLineFlag.SETRANGE(ImportFlag, FALSE);
+                    IF Grcd_ProdBOMLineFlag.FIND('-') THEN
+                        REPEAT
+                            Window.UPDATE(1, 'Delete useless BOM Line');
+                            Window.UPDATE(2, Grcd_ProdBOMLineFlag."No.");
+                            BOMResultFunction(Grcd_ProdBOMLineFlag."Production BOM No.", Grcd_ProdBOMLineFlag."Version Code",
+                                  Grcd_ProdBOMLineFlag."No.", Grcd_ProdBOMLineFlag."Line No.", FALSE, FALSE, FALSE, TRUE, FALSE);
+                            Grcd_ProdBOMLineFlag.DELETE;
+                        UNTIL Grcd_ProdBOMLineFlag.NEXT = 0;
+                    //--ALF
                 END;
             UNTIL Grcd_ProdBOMHeadFlag.NEXT = 0;
 

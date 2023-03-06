@@ -85,7 +85,7 @@ pageextension 59020 "TP Sales Order List" extends "Sales Order List"
         }
         addafter(Status)
         {
-            field("Partial Shiped"; Rec."Partial Shiped")
+            field("Partial Shipped"; Rec."Partial Shipped")
             {
                 ApplicationArea = all;
             }
@@ -93,6 +93,13 @@ pageextension 59020 "TP Sales Order List" extends "Sales Order List"
         addbefore("No.")
         {
             field("Order Date"; Rec."Order Date")
+            {
+                ApplicationArea = all;
+            }
+        }
+        addlast(Control1)
+        {
+            field("Completely Invoiced"; Rec."Completely Invoiced")
             {
                 ApplicationArea = all;
             }
@@ -130,6 +137,45 @@ pageextension 59020 "TP Sales Order List" extends "Sales Order List"
                                 ReleaseDoc.Run(SalesHeader);
                             until SalesHeader.Next() = 0;
                         window.Close();
+                    end;
+                }
+
+                action("Refresh Completely Invoiced")
+                {
+                    Caption = 'Refresh Completely Invoiced';
+                    Image = ReleaseDoc;
+                    Promoted = true;
+                    PromotedCategory = Process;
+
+                    trigger OnAction()
+                    var
+                        SalesLine: Record "Sales Line";
+                        SalesHeader: Record "Sales Header";
+                    begin
+                        Window.open('#1##########');
+                        SalesHeader.Reset();
+                        SalesHeader.SetRange("Document Type", SalesHeader."Document Type"::Order);
+                        SalesHeader.SetRange("Completely Invoiced", false);
+                        if SalesHeader.FindFirst() then
+                            repeat
+                                Window.Update(1, SalesHeader."No.");
+                                SalesLine.Reset();
+                                SalesLine.SetRange("Document Type", SalesLine."Document Type"::Order);
+                                SalesLine.SetRange("Document No.", SalesHeader."No.");
+                                SalesLine.SetFilter(Quantity, '<>0');
+                                if SalesLine.FindFirst() then begin
+                                    SalesHeader."Completely Invoiced" := true;
+                                    repeat
+                                        if SalesLine.Quantity <> SalesLine."Quantity Invoiced" then begin
+                                            SalesHeader."Completely Invoiced" := false;
+                                        end;
+                                    until SalesLine.Next() = 0;
+                                end else begin
+                                    SalesHeader."Completely Invoiced" := false;
+                                end;
+                                SalesHeader.Modify();
+                            until SalesHeader.Next() = 0;
+                        Window.Close();
                     end;
                 }
 
@@ -409,7 +455,7 @@ pageextension 59020 "TP Sales Order List" extends "Sales Order List"
                     SalesHeader2: Record "Sales Header";
                     DocFilter: Text;
                 begin
-
+                    Rec.TestField(Status, SalesHeader.Status::Released);
                     SalesHeader.Reset();
                     CurrPage.SetSelectionFilter(SalesHeader);
                     if SalesHeader.FindFirst() then
@@ -440,6 +486,7 @@ pageextension 59020 "TP Sales Order List" extends "Sales Order List"
                     SalesHeader2: Record "Sales Header";
                     DocFilter: Text;
                 begin
+                    Rec.TestField(Status, SalesHeader.Status::Released);
                     // Currpage.setselectionfilter(Salesheader);
                     // SalesHeader.SetRange("No.", Rec."No.");
                     // CNSalesOrder.Settableview(Salesheader);
@@ -459,6 +506,38 @@ pageextension 59020 "TP Sales Order List" extends "Sales Order List"
                     SalesHeader2.SetFilter("No.", DocFilter);
                     CNSalesOrder.SetTableView(SalesHeader2);
                     CNSalesOrder.RunModal();
+                end;
+            }
+
+            action("Sales Shipment History")
+            {
+                Caption = 'Sales Shipment History';
+                Image = Print;
+                Promoted = true;
+                PromotedCategory = Category8;
+
+                trigger OnAction()
+                var
+                    SalesHistory: Report "Sales History";
+                    SalesHeader: Record "Sales Header";
+                    SalesShipmentLine2: Record "Sales Shipment Line";
+                    DocFilter: Text;
+                begin
+
+                    SalesHeader.Reset();
+                    CurrPage.SetSelectionFilter(SalesHeader);
+                    if SalesHeader.FindFirst() then
+                        repeat
+                            if DocFilter = '' then
+                                DocFilter := SalesHeader."No."
+                            else
+                                DocFilter := DocFilter + '|' + SalesHeader."No.";
+                        until SalesHeader.Next() = 0;
+                    SalesShipmentLine2.Reset();
+                    // SalesHeader2.setrange("Document Type", Rec."Document Type");
+                    SalesShipmentLine2.SetFilter("Order No.", DocFilter);
+                    SalesHistory.SetTableView(SalesShipmentLine2);
+                    SalesHistory.RunModal();
                 end;
             }
         }
@@ -481,6 +560,7 @@ pageextension 59020 "TP Sales Order List" extends "Sales Order List"
     end;
 
 
+
     procedure ConvertDate(DateText: Text[20]): date
     var
         YearL: Integer;
@@ -500,4 +580,5 @@ pageextension 59020 "TP Sales Order List" extends "Sales Order List"
         TotalQuantity: Decimal;
         Text002: Label 'Will you confirm?';
         userSetup: Record "User Setup";
+        Window: Dialog;
 }

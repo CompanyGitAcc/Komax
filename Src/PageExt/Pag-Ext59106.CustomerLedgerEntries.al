@@ -13,6 +13,17 @@ pageextension 59106 "TP Customer Ledger Entries" extends "Customer Ledger Entrie
             field("Order No."; Rec."Order No.")
             {
                 ApplicationArea = all;
+                trigger OnDrillDown()
+                var
+                    SalesOrder: page "Sales Order";
+                    SalesHeader: Record "Sales Header";
+                begin
+                    SalesHeader.SetRange("Document Type", SalesHeader."Document Type"::Order);
+                    SalesHeader.SetFilter("No.", Rec."Order No.");
+                    SalesOrder.SetTableView(SalesHeader);
+                    SalesOrder.Run();
+                    Clear(SalesOrder);
+                end;
             }
         }
         moveafter("Order No."; "External Document No.")
@@ -59,10 +70,15 @@ pageextension 59106 "TP Customer Ledger Entries" extends "Customer Ledger Entrie
         }
         addafter("Customer No.")
         {
-            field(SalesPerson; SalesPerson)
+            field("Sales Person"; Rec."Sales Person")
             {
-                Caption = 'SalesPerson';
                 ApplicationArea = all;
+                Editable = false;
+            }
+            field("Order Type"; Rec."Order Type")
+            {
+                ApplicationArea = all;
+                Editable = false;
             }
         }
         modify("Salesperson Code")
@@ -78,21 +94,54 @@ pageextension 59106 "TP Customer Ledger Entries" extends "Customer Ledger Entrie
         }
     }
 
+    actions
+    {
+        addlast("F&unctions")
+        {
+            action("Accept")
+            {
+                Caption = 'Accept';
+                Image = Confirm;
+                Promoted = true;
+                PromotedCategory = Process;
+
+                trigger OnAction()
+                var
+                    CustLedgerEntry: Record "Cust. Ledger Entry";
+                begin
+                    CurrPage.SetSelectionFilter(CustLedgerEntry);
+                    if CustLedgerEntry.FindFirst() then
+                        CustLedgerEntry.MODIFYALL("Advance Payment", TRUE);
+                    CurrPage.Update();
+                end;
+            }
+        }
+    }
+
+
     trigger OnAfterGetRecord()
     begin
-        SalesInvoiceLine.Reset();
-        SalesInvoiceLine.SetRange("Document No.", Rec."Document No.");
-        if SalesInvoiceLine.FindLast() then begin
-            if SalesHeader.get(SalesHeader."Document Type"::Order, SalesInvoiceLine."Order No.") then begin
-                SalesPerson := SalesHeader."Sales Person";
+        if Rec."User ID" <> 'KOMAX\CN101252' then begin
+            if SalesHeader.get(SalesHeader."Document Type"::Order, Rec."Order No.") then begin
+                Rec."Sales Person" := SalesHeader."SalesPerson Code";
+                Rec."Order Type" := SalesHeader."Order Type";
+            end else begin
+                Rec."Sales Person" := '';
+                Rec."Order Type" := Rec."Order Type"::" ";
+            end;
+        end else begin
+            if SalesHeader.get(SalesHeader."Document Type"::Order, Rec."Order No.") then begin
+                Rec."Order Type" := SalesHeader."Order Type";
+            end else begin
+                Rec."Order Type" := Rec."Order Type"::" ";
             end;
         end;
     end;
 
     var
-        SalesInvoiceLine: Record "Sales Invoice Line";
         SalesHeader: Record "Sales Header";
         SalesPerson: Code[20];
+        OrderType: Enum "Sales Order Type";
         TPUtilities: Codeunit "TP Utilities";
 
 }

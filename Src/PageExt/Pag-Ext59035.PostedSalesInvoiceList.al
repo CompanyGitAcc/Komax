@@ -41,6 +41,7 @@ pageextension 59035 "TP Posted Sales Invoices" extends "Posted Sales Invoices"
                 window.Update(1, SalesInvHeader."No.");
                 SalesInvLine.Reset();
                 SalesInvLine.SetRange("Document No.", SalesInvHeader."No.");
+                SalesInvLine.SetRange(Type, SalesInvLine.Type::Item);
                 if SalesInvLine.FindFirst() then
                     repeat
                         TmpItem.Init();

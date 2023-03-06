@@ -81,6 +81,17 @@ pageextension 59162 "TP Sales Orders" extends "Sales Orders"
         {
             Visible = false;
         }
+        addafter("Document No.")
+        {
+            field(OrderStatus; Rec.OrderStatus)
+            {
+                ApplicationArea = all;
+            }
+            field("External Document No."; Rec."External Document No.")
+            {
+                ApplicationArea = all;
+            }
+        }
     }
     trigger OnAfterGetRecord()
     var

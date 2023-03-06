@@ -1,4 +1,4 @@
-table 50045 "Order Type Location Bin Setup"
+table 50025 "Order Type Location Bin Setup"
 {
 
     fields

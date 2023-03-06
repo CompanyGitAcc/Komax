@@ -28,7 +28,7 @@ page 50098 "Shipped Not Invoiced"
                 field(Amount; Rec.Amount)
                 {
                 }
-                field("Amount Excl VAT"; REc."Amount Excl VAT")
+                field("Amount Excl VAT"; Rec."Amount Excl VAT")
                 {
                 }
                 field("Amount Including VAT"; Rec."Amount Including VAT")
@@ -40,7 +40,7 @@ page 50098 "Shipped Not Invoiced"
                 field("Material Shipped not Invoiced"; Rec."Material Shipped not Invoiced")
                 {
                 }
-                field("Partial Shiped"; Rec."Partial Shiped")
+                field("Partial Shipped"; Rec."Partial Shipped")
                 {
                 }
                 field("External Document No."; Rec."External Document No.")
@@ -70,6 +70,10 @@ page 50098 "Shipped Not Invoiced"
     trigger OnOpenPage()
     begin
         Rec.SetRange("Order Type", Rec."Order Type"::Warranty);
+        Rec.SetFilter("Material Shipped not Invoiced", '<>0');
     end;
+
+    var
+        VAT: Decimal;
 }
 

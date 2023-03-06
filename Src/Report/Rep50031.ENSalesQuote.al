@@ -674,10 +674,22 @@ report 50031 "EN Sales Quote"
                     //++ALF
 
                     //FormatDocument.SetSalesLine(Line, FormattedQuantity, FormattedUnitPrice, FormattedVATPct, FormattedLineAmount);
-                    FormattedQuantity := format(Line.Quantity);
-                    FormattedVATPct := format(Line."VAT %");
-                    FormattedUnitPrice := format(round((100 - Line."Line Discount %") * 0.01 * Line."Unit Price", 0.01));
-                    FormattedLineAmount := Format(round(Line."Line Amount", 0.01));
+                    if Line.Quantity = 0 then
+                        FormattedQuantity := ''
+                    else
+                        FormattedQuantity := format(Line.Quantity);
+                    if Line."VAT %" = 0 then
+                        FormattedVATPct := ''
+                    else
+                        FormattedVATPct := format(Line."VAT %");
+                    if round((100 - Line."Line Discount %") * 0.01 * Line."Unit Price", 0.01) = 0 then
+                        FormattedUnitPrice := ''
+                    else
+                        FormattedUnitPrice := format(round((100 - Line."Line Discount %") * 0.01 * Line."Unit Price", 0.01));
+                    if round(Line."Line Amount", 0.01) = 0 then
+                        FormattedLineAmount := ''
+                    else
+                        FormattedLineAmount := Format(round(Line."Line Amount", 0.01));
                     //--ALF
 
                     if FirstLineHasBeenOutput then
